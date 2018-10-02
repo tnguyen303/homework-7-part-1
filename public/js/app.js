@@ -1,27 +1,4 @@
 $(function () {
-    // const toDoList = [
-    //     {
-    //         task: "Buy diaper",
-    //         done: false
-    //     },
-    //     {
-    //         task: "Change light bulb",
-    //         done: false
-    //     },
-    //     {
-    //         task: "Do homework",
-    //         done: false
-    //     },
-    //     {
-    //         task: "Clean room",
-    //         done: false
-    //     },
-    //     {
-    //         task: "Take wife out",
-    //         done: false
-    //     }
-    // ];
-
     let index = 0;
     const render = function (outputElement, dataList) {
         dataList.forEach(e => {
@@ -37,14 +14,13 @@ $(function () {
 
     $('.fa-share').on('click', function (event) {
         event.preventDefault();
-
+        //display in front-end make an array of 1 element
+        const newInput = { task: $('#newInput').val().trim(), done: false };
+        const newInputList = [newInput];
         //post data to server
-        $.ajax({ url: '/api/todolist', method: 'POST', data: newInput }).
-            then(function (data) {
+        $.ajax({ url: '/api/todolist', method: 'POST', data: newInput })
+            .then(function (data) {
                 if (data.success === true) {
-                    //display in front-end make an array of 1 element
-                    const newInput = { task: $('#newInput').val().trim(), done: false };
-                    const newInputList = [newInput];
                     render('#content', newInputList);
                     $('#newInput').val('');
                     index++;
@@ -61,9 +37,10 @@ $(function () {
             //extract number from value property of clicked button
             const deleteId = $(this).attr('value');
             $(`#item-${deleteId}`).remove();
+            $.ajax({url: '/api/todolist', method: "DELETE", data: deleteId});
         });
     });
-    
+
     $.ajax({ url: "/api/todolist", method: "GET" })
         .then(function (data) {
             render('#content', data);
