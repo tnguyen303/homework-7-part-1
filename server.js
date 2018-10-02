@@ -40,7 +40,7 @@ app.use(express.static(__dirname + '/public'));
 // });
 
 app.delete('/api/todolist', function (req, res) {
-    toDoList.splice(toDoList.findIndex(e => e === req.body), 1);
+    toDoList.splice(toDoList.findIndex(e => e === req.body.task), 1);
     res.json({ success: true });
 });
 
@@ -60,6 +60,7 @@ app.get('/api/todolist', function (req, res) {
 });
 
 app.post('/api/todolist', function (req, res) {
+
     // Create a new todo entry in the database
     db.toDoList.create(req.body)
         .then(function (dbList) {
