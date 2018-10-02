@@ -6,24 +6,30 @@ const mongoose = require('mongoose');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const toDoList = require('app.js');
+const toDoList = require('./todo-list.js');
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/api/todolist', function(req,res){
+app.get('/api/todolist', function (req, res) {
     res.json(toDoList);
 });
 
 app.post('/api/todolist', function (req, res) {
-    toDoList.push(req.body);
-    res.json({success: true});
+    if (req.body === '') {
+        res.json({ success: false });
+    }
+    else{
+        toDoList.push(req.body);
+        res.json(toDoList);
+        res.json({ success: true });
+    }
 });
 
-app.delete('/api/todolist', function(req,res){
-    toDoList.splice(toDoList.findIndex(e => e===req.body), 1);
-    res.json({success: true});
+app.delete('/api/todolist', function (req, res) {
+    toDoList.splice(toDoList.findIndex(e => e === req.body), 1);
+    res.json({ success: true });
 });
 
 app.listen(PORT, function () {

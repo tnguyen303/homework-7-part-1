@@ -1,36 +1,40 @@
-const toDoList = ["Buy diaper", "Change light bulb", "Do homework", "Clean room", "Take wife out"];
+$.ajax({ url: '/api/todolist', method: 'GET' }).
+    then(function (data) {
+        render('#content', data);
+    });
 
 let index = 0;
-toDoList.forEach(e => {
-    $('#content').append(`
-    <div id='item-${index}' class="toDoItem">
-    <input class="finishedBtn" type="checkbox">
-    <span>${e}</span>
-    <a href="#"><span id='deleteBtn-${index}' class="delete fas fa-times" value='${index}'></span></a>
-    </div>`);
-    index++;
-});
+
+const render = function (outputElement, dataList) {
+    dataList.forEach(e => {
+        $(outputElement).append(`
+        <div id='item-${index}' class="toDoItem">
+        <input class="finishedBtn" type="checkbox">
+        <span>${e.task}</span>
+        <a href="#"><span id='deleteBtn-${index}' class="delete fas fa-times" value='${index}'></span></a>
+        </div>`);
+        index++;
+    });
+};
 
 $('.fa-share').on('click', function (event) {
-    const newInput = $('#newInput').val().trim();
     event.preventDefault();
-    $('#content').append(`
-    <div id='item-${index}' class="toDoItem">
-    <input class="finishedBtn" type="checkbox">
-    <span>${newInput}</span>
-    <a href="#"><span id='deleteBtn-${index}' class="delete fas fa-times" value='${index}'></span></a>
-    </div>`)
-    $('#newInput').val('');
-    toDoList.push(newInput);
-    index++;
 
-    //post data to server for storage
-    $.ajax({url:'/api/todolist', method: 'POST', data: newInput}).then(
-        function(data){
-            
-        }
-    )
-
+    //post data to server
+    $.ajax({ url: '/api/todolist', method: 'POST', data: newInput }).
+        then(function (data) {
+            if (data.success === true) {
+                //display in front-end make an array of 1 element
+                const newInput = {task: $('#newInput').val().trim(), done:false};
+                const newInputList = [newInput];
+                render('#content', newInputList);
+                $('#newInput').val('');
+                index++;
+            }
+            else {
+                alert('Field cannot be empty');
+            }
+        });
 });
 
 $(document).ready(function () {
@@ -41,50 +45,3 @@ $(document).ready(function () {
         $(`#item-${deleteId}`).remove();
     });
 });
-
-// Sets up the Express app to handle data parsing
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.json());
-
-// app.post('/api/todolist', function (req, res) {
-//     console.log(req.body);
-//     //end response
-//     res.end();
-// });
-
-// app.delete('/', function (req, res) {
-//     toDoList[toDoList.findIndex(e => e.)]//not sure how this is handled
-//     res.end();
-// });
-
-// $.ajax({ url: '/api/todolist', method: 'POST', data: newReservation }).then(
-//     function (data) {
-
-//         // If our POST request was successfully processed, proceed on
-//         if (data.success) {
-
-//             console.log('data', data)
-//             // If a table is available... tell user they are booked.
-//             if (!data.waitlist) {
-//                 alert('Yay! You are officially booked!');
-//             }
-
-//             // If a table is available... tell user they on the waiting list.
-//             else {
-//                 alert('Sorry you are on the wait list');
-//             }
-
-//             // Clear the form when submitting
-//             $('#reserve-name').val('');
-//             $('#reserve-phone').val('');
-//             $('#reserve-email').val('');
-//             $('#reserve-unique-id').val('');
-
-//             $('#reserve-name').focus();
-//         } else {
-
-//             alert('There was a problem with your submission. Please check your entry and try again.');
-//         }
-
-
-//     });
