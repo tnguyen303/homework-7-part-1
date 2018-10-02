@@ -1,9 +1,3 @@
-// const express = require('express');
-// const path = require('path');
-
-// const app = express();
-// const PORT = 8080;
-
 const toDoList = ["Buy diaper", "Change light bulb", "Do homework", "Clean room", "Take wife out"];
 
 let index = 0;
@@ -14,24 +8,33 @@ toDoList.forEach(e => {
     <span>${e}</span>
     <a href="#"><span id='deleteBtn-${index}' class="delete fas fa-times" value='${index}'></span></a>
     </div>`);
-    index ++;
+    index++;
 });
 
 $('.fa-share').on('click', function (event) {
+    const newInput = $('#newInput').val().trim();
     event.preventDefault();
     $('#content').append(`
     <div id='item-${index}' class="toDoItem">
     <input class="finishedBtn" type="checkbox">
-    <span>${$('#newInput').val().trim()}</span>
+    <span>${newInput}</span>
     <a href="#"><span id='deleteBtn-${index}' class="delete fas fa-times" value='${index}'></span></a>
     </div>`)
     $('#newInput').val('');
-    toDoList.push($('#newInput').val().trim());
-    index ++;
+    toDoList.push(newInput);
+    index++;
+
+    //post data to server for storage
+    $.ajax({url:'/api/todolist', method: 'POST', data: newInput}).then(
+        function(data){
+            
+        }
+    )
+
 });
 
-$(document).ready(function(){
-    $(document).on('click', '.delete', function(event){
+$(document).ready(function () {
+    $(document).on('click', '.delete', function (event) {
         event.preventDefault();
         //extract number from value property of clicked button
         const deleteId = $(this).attr('value');
