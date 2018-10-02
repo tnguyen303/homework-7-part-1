@@ -16,6 +16,12 @@ app.get('/api/todolist', function (req, res) {
     res.json(toDoList);
 });
 
+app.get('/',function(req,res){
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+app.use(express.static(__dirname + '/public'));
+
 app.post('/api/todolist', function (req, res) {
     if (req.body === '') {
         res.json({ success: false });
