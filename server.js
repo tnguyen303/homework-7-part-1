@@ -16,13 +16,18 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Connect to the Mongo DB using the inventorymaster database (will be created if it doesn't exist)
-mongoose.connect('mongodb://localhost/toDoListmaster', { useNewUrlParser: true });
+mongoose.connect(
+    process.env.MONGODB_URI || "mongodb://user:123456a@ds121203.mlab.com:21203/heroku_zr357z2k",
+    {
+        useNewUrlParser: true
+    }
+);
 
 // app.get('/api/todolist', function (req, res) {
 //     res.json(toDoList);
 // });
 
-app.get('/',function(req,res){
+app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
