@@ -33,15 +33,15 @@ app.get('/', function (req, res) {
 
 app.use(express.static(__dirname + '/public'));
 
-app.delete('/api/todolist', function (req, res) {
+app.delete('/api/todolist/:taskQuery', function (req, res) {
     db
-        .remove({ task: req.body })
+        .remove({ task: req.params.taskQuery })
         .then(function () {
-            res.json({ success: true });
+            res.json(db);
+        })
+        .catch(function (err) {
+            res.json(err);
         });
-        // .catch(function (err) {
-        //     res.json(err);
-        // });
 });
 
 app.listen(PORT, function () {

@@ -37,9 +37,15 @@ $(function () {
             //extract number from value property of clicked button
             const deleteId = $(this).attr('value');
             $(`#item-${deleteId}`).remove();
-            $.ajax({url: '/api/todolist', method: "DELETE", data: deleteId});
+            $.ajax({ url: `/api/todolist/${deleteId}`, method: "DELETE" });
+            $('#content').html('');
+            $.ajax({ url: "/api/todolist", method: "GET" })
+                .then(function (data) {
+                    render('#content', data);
+                });
         });
     });
+
 
     $.ajax({ url: "/api/todolist", method: "GET" })
         .then(function (data) {
