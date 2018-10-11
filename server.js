@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,12 +17,15 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Connect to the Mongo DB using the inventorymaster database (will be created if it doesn't exist)
-mongoose.connect(
-    process.env.MONGODB_URI || "mongodb://user:123456a@ds121203.mlab.com:21203/heroku_zr357z2k",
-    {
-        useNewUrlParser: true
-    }
-);
+mongoose
+    .connect(
+        process.env.MONGODB_URI || "mongodb://user:123456a@ds121203.mlab.com:21203/heroku_zr357z2k",
+        {
+            useNewUrlParser: true
+        }
+    )
+    .then(() => console.log('Mongodb connected...'))
+    .catch(err => console.log(err));
 
 // app.get('/api/todolist', function (req, res) {
 //     res.json(toDoList);
