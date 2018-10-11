@@ -3,10 +3,10 @@ $(function () {
     const render = function (outputElement, dataList) {
         dataList.forEach(e => {
             $(outputElement).append(`
-            <div id='item-${index}' class="toDoItem">
+            <div id='item-${e.task}' class="toDoItem">
             <input class="finishedBtn" type="checkbox">
             <span>${e.task}</span>
-            <a href="#"><span id='deleteBtn-${index}' class="delete fas fa-times" value='${index}'></span></a>
+            <a href="#"><span id='deleteBtn-${e.task}' class="delete fas fa-times" value='${e.task}'></span></a>
             </div>`);
             index++;
         });
@@ -26,7 +26,7 @@ $(function () {
                     index++;
                 }
                 else {
-                    alert('Field cannot be empty');
+                    alert('Enter a unique input');
                 }
             });
     });

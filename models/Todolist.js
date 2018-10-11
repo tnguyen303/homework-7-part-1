@@ -1,14 +1,10 @@
 const mongoose = require('mongoose');
-
-// Save a reference to the Schema constructor
 const Schema = mongoose.Schema;
-
-// Using the Schema constructor, create a new UserSchema object
 const toDoSchema = new Schema({
   task: {
     type: String,
     unique: true,
-    required: "You must include a task"
+    required: "You must include a unique task"
   },
   done: {
     type: Boolean,

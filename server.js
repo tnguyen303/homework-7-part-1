@@ -7,9 +7,9 @@ mongoose.Promise = global.Promise;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const toDoList = require('./todo-list.js');
+// const toDoList = require('./todo-list.js');
 
-const db = require('./models');
+const db = require('./models/Todolist');
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
@@ -27,30 +27,21 @@ mongoose
     .then(() => console.log('Mongodb connected...'))
     .catch(err => console.log(err));
 
-// app.get('/api/todolist', function (req, res) {
-//     res.json(toDoList);
-// });
-
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.use(express.static(__dirname + '/public'));
 
-// app.post('/api/todolist', function (req, res) {
-//     if (req.body === '') {
-//         res.json({ success: false });
-//     }
-//     else{
-//         toDoList.push(req.body);
-//         res.json(toDoList);
-//         res.json({ success: true });
-//     }
-// });
-
 app.delete('/api/todolist', function (req, res) {
-    toDoList.splice(toDoList.findIndex(e => e === req.body.task), 1);
-    res.json({ success: true });
+    db
+        .remove({ task: req.body })
+        .then(function () {
+            res.json({ success: true });
+        });
+        // .catch(function (err) {
+        //     res.json(err);
+        // });
 });
 
 app.listen(PORT, function () {
@@ -58,26 +49,23 @@ app.listen(PORT, function () {
 });
 
 app.get('/api/todolist', function (req, res) {
-    db.toDoList.find({})
-        .then(function (dbList) {
-            res.json(dbList);
+    db
+        .find({})
+        .then(function (list) {
+            res.json(list);
         })
         .catch(function (err) {
-            // If an error occurs, send the error back to the client
             res.json(err);
         });
 });
 
 app.post('/api/todolist', function (req, res) {
-
-    // Create a new todo entry in the database
-    db.toDoList.create(req.body)
-        .then(function (dbList) {
-            // Then send the results to the client
-            res.json(dbList);
+    new db(req.body)
+        .save()
+        .then(function () {
+            res.json({ success: true })
         })
         .catch(function (err) {
-            // If an error occurs, send it back to the client
             res.json(err);
         });
 });
